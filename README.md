@@ -79,3 +79,13 @@ To learn more about React Native, take a look at the following resources:
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
 - [fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/fetch) - 数据请求相关。
 - [React Navigation](https://reactnavigation.org/docs/getting-started/) - react-native 导航。
+
+# 异常问题
+
+针对编辑器的eslint的报错，可以删除该项目的默认pretter配置。
+
+位置在@react-native/eslint-config
+
+```js
+// extends: ['plugin:prettier/recommended'],
+```

@@ -10,6 +10,10 @@ import {
   View,
 } from 'react-native';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
 import {
   Colors,
   DebugInstructions,
@@ -48,7 +52,9 @@ function Section({children, title}: SectionProps): JSX.Element {
   );
 }
 
-function App(): JSX.Element {
+function App(props): JSX.Element {
+  console.log(props);
+  const { navigation }  = props;
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -64,7 +70,7 @@ function App(): JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
+        <Header onPress = {() => navigation.navigate('Details')} />
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
@@ -73,7 +79,7 @@ function App(): JSX.Element {
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
             screen and then come back to see your edits.
           </Section>
-          <Section title="See Your Changes">
+          <Section title="See Your Changes1111">
             <ReloadInstructions />
           </Section>
           <Section title="Debug">
@@ -88,6 +94,37 @@ function App(): JSX.Element {
     </SafeAreaView>
   );
 }
+function DetailsScreen() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Details Screen</Text>
+      <Text>11111</Text>
+    </View>
+  );
+}
+
+function AppDefault(): JSX.Element {
+  const linking = {
+    prefixes: ['https://mychat.com', 'mychat://'],
+    config: {
+      screens: {
+        Home: 'feed/:sort',
+      },
+    },
+  };
+  return (
+    <NavigationContainer linking={linking}>
+      <Stack.Navigator initialRouteName="Home">
+        {/* <Stack.Screen name="Home" component={App} options={{ title: 'Overview' }} /> */}
+        <Stack.Screen name="Home">
+          {(props: any) => <App {...props}/>}
+        </Stack.Screen>
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -108,4 +145,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default AppDefault;
