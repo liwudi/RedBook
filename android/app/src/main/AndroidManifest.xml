@@ -22,12 +22,12 @@
         </intent-filter>
         <!-- 在这里配置applink，腾讯应用宝打开 -->
         <!-- 自定义的scheme name -->
-        <intent-filter android:label="custom scheme name">
+        <!-- <intent-filter android:label="custom scheme name" android:priority="100">
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="saanw" android:host="saanw"/>
-        </intent-filter>
+          <data android:scheme="android" android:host="saanw" android:pathPatten="*"/>
+        </intent-filter> -->
       </activity>
     </application>
 </manifest>
