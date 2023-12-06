@@ -1,30 +1,31 @@
 import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
 } from 'react-native';
+import ToastExample from './utils/ToastExample';
+import Wxpay from './utils/Wxpay';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 const Stack = createNativeStackNavigator();
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-
-
-
-
+// function pressEvent() {
+//   ToastExample.show('Awesome', ToastExample.SHORT);
+// }
+async function pressEvent () {
+  let isSupported = await Wxpay.isSupported();
+  ToastExample.show(JSON.stringify(isSupported), ToastExample.SHORT);
+}
 function App(): JSX.Element {
 
   return (
-    <View><Text>测试字体：</Text><Text style={styles.fontStyle}>广场12334阿里妈妈字体</Text></View>
+    <View>
+      <Text>测试字体：</Text>
+      <Text style={styles.fontStyle}>广场12334阿里妈妈字体</Text>
+      <View><Text onPress={pressEvent}>测试微信支付</Text></View>
+    </View>
+
   );
 }
 function DetailsScreen() {
