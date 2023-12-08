@@ -1,38 +1,53 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import type {PropsWithChildren} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import ToastExample from './utils/ToastExample';
 import Wxpay from './utils/Wxpay';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
-// function pressEvent() {
-//   ToastExample.show('Awesome', ToastExample.SHORT);
-// }
-async function pressEvent () {
+
+async function pressEvent() {
   let isSupported = await Wxpay.isSupported();
   ToastExample.show(JSON.stringify(isSupported), ToastExample.SHORT);
 }
-function App(): JSX.Element {
-
+function gotoPage(props) {
+  //
+  props.navigation.navigate('Details', {
+    itemId: 86,
+    otherParams: 'anything you want here',
+  });
+}
+function HomeScreen({navigation, route}) {
+  return <View></View>;
+}
+function App(props): JSX.Element {
+  console.log(props);
   return (
     <View>
       <Text>测试字体：</Text>
       <Text style={styles.fontStyle}>广场12334阿里妈妈字体</Text>
-      <View><Text onPress={pressEvent}>测试微信支付</Text></View>
+      <View>
+        <Text onPress={pressEvent}>测试微信支付</Text>
+      </View>
+      <View>
+        <Text onPress={() => gotoPage(props)}>测试路由跳转</Text>
+      </View>
     </View>
-
   );
 }
-function DetailsScreen() {
+function DetailsScreen(props) {
+  // let params = JSON.stringify(props.route.params.itemId);
+  let params = JSON.stringify(props);
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Details Screen</Text>
       <Text>11111</Text>
+      <View>
+        <Text>Props:</Text>
+        <Text>{params}</Text>
+      </View>
     </View>
   );
 }
@@ -49,16 +64,16 @@ function AppDefault(): JSX.Element {
   return (
     <NavigationContainer linking={linking}>
       <Stack.Navigator initialRouteName="Home">
-        {/* <Stack.Screen name="Home" component={App} options={{ title: 'Overview' }} /> */}
-        <Stack.Screen name="Home">
-          {(props: any) => <App {...props}/>}
-        </Stack.Screen>
-        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Home" component={App} />
+        <Stack.Screen
+          name="Details"
+          component={DetailsScreen}
+          initialParams={{itemId: 42}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
 
 const styles = StyleSheet.create({
   sectionContainer: {
