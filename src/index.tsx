@@ -1,100 +1,123 @@
-import React, {useEffect} from 'react';
-import type {PropsWithChildren} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import ToastExample from './utils/ToastExample';
-import Wxpay from './utils/Wxpay';
+import React, {useEffect, useState} from 'react';
+import {Button, Text, TextInput, View} from 'react-native';
+import commonStyles from './styles/common';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+// redux 使用
+import {useAppSelector, useAppDispatch} from './store/hooks';
+import {updateUserInfo} from './store/userSlice';
+// import {useSelector} from 'react-redux';
 const Stack = createNativeStackNavigator();
-
-async function pressEvent() {
-  let isSupported = await Wxpay.isSupported();
-  ToastExample.show(JSON.stringify(isSupported), ToastExample.SHORT);
-}
-function gotoPage(props) {
-  //
-  props.navigation.navigate('Details', {
-    itemId: 86,
-    otherParams: 'anything you want here',
-  });
-}
+const Tab = createMaterialBottomTabNavigator();
 function HomeScreen({navigation, route}) {
-  return <View></View>;
-}
-function App(props): JSX.Element {
-  console.log(props);
+  const [list, setList] = useState<Array<string>>([]);
+  useEffect(() => {
+    if (route.params?.post) {
+      //
+      // ToastExample.show(route.params?.post, ToastExample.LONG);
+      setList([...list, route.params?.post]);
+    }
+  }, [route.params?.post]);
   return (
-    <View>
-      <Text>测试字体：</Text>
-      <Text style={styles.fontStyle}>广场12334阿里妈妈字体</Text>
-      <View>
-        <Text onPress={pressEvent}>测试微信支付</Text>
-      </View>
-      <View>
-        <Text onPress={() => gotoPage(props)}>测试路由跳转</Text>
-      </View>
+    <View style={commonStyles.center}>
+      {list.map(item => (
+        <Text>{item}</Text>
+      ))}
+      <Button
+        title="Create post"
+        onPress={() => navigation.navigate('CreatePost')}
+      />
     </View>
   );
 }
-function DetailsScreen(props) {
-  // let params = JSON.stringify(props.route.params.itemId);
-  let params = JSON.stringify(props);
+function SettingScreen(props): JSX.Element {
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Details Screen</Text>
-      <Text>11111</Text>
-      <View>
-        <Text>Props:</Text>
-        <Text>{params}</Text>
-      </View>
+    <View style={commonStyles.center}>
+      <Text>SettingScreen: {JSON.stringify(props.navigation)}</Text>
+      <Button title="go back" />
     </View>
   );
 }
-
+function CreatePostScreen({navigation, route}) {
+  const [postText, setPostText] = useState('');
+  // 使用数据
+  const useInfo = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
+  return (
+    <>
+      <TextInput
+        multiline
+        placeholder="what is on your mind"
+        style={{height: 200, padding: 10, backgroundColor: 'white'}}
+        value={postText}
+        onChangeText={setPostText}
+      />
+      <Button
+        title="Done"
+        onPress={() => {
+          navigation.navigate({
+            name: 'Home',
+            params: {post: postText},
+            merge: true,
+          });
+        }}
+      />
+      <Button
+        title="跳转Home,SettingScreen"
+        onPress={() => {
+          navigation.navigate('Home', {
+            screen: 'SettingScreen',
+          });
+        }}
+      />
+      <View>
+        <Text>User信息：{JSON.stringify(useInfo)}</Text>
+        <Button
+          title="updateUserInfo"
+          onPress={() =>
+            dispatch(
+              updateUserInfo({
+                username: '李武帝',
+                age: 32,
+                userAvatar: 'XXX',
+              }),
+            )
+          }
+        />
+      </View>
+    </>
+  );
+}
+function Home() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Feed" component={HomeScreen} />
+      <Tab.Screen name="SettingScreen" component={SettingScreen} />
+    </Tab.Navigator>
+  );
+}
 function AppDefault(): JSX.Element {
-  const linking = {
-    prefixes: ['https://mychat.com', 'mychat://'],
-    config: {
-      screens: {
-        Home: 'feed/:sort',
-      },
-    },
-  };
   return (
-    <NavigationContainer linking={linking}>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={App} />
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="CreatePost">
         <Stack.Screen
-          name="Details"
-          component={DetailsScreen}
+          name="Home"
+          component={Home}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CreatePost"
+          component={CreatePostScreen}
           initialParams={{itemId: 42}}
+          options={{title: 'CreatePost'}}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  fontStyle: {
-    fontFamily: 'AlimamaDaoLiTi',
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default AppDefault;

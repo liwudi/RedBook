@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import {baseSize} from './base';
 const commonStyles = StyleSheet.create({
   center: {
-    display: 'flex',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
