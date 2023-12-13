@@ -1,22 +1,18 @@
-function commonFilter (res: any) {
-    return res;
+function commonFilter(res: any) {
+  return res;
 }
 function get(url: string) {
-    return fetch(url).then(res => {
-        return commonFilter(res);
-    });
+  return fetch(url).then(res => {
+    return commonFilter(res);
+  });
 }
-function post() {
-
-}
-function upload() {
-
-}
+function post() {}
+function upload() {}
 
 const RequestService = {
-    get,
-    post,
-    upload,
+  get,
+  post,
+  upload,
 };
 
 export default RequestService;

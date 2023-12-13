@@ -8,6 +8,8 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 // redux 使用
 import {useAppSelector, useAppDispatch} from './store/hooks';
 import {updateUserInfo} from './store/userSlice';
+// Toast
+import Toast from './components/Toast';
 // import {useSelector} from 'react-redux';
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -40,8 +42,12 @@ function SettingScreen(props): JSX.Element {
     </View>
   );
 }
+const showToast = () => {
+  Toast.show('ios Toast');
+};
 function CreatePostScreen({navigation, route}) {
   const [postText, setPostText] = useState('');
+  const [toast, setToast] = useState<any>('');
   // 使用数据
   const useInfo = useAppSelector(state => state.user);
   const dispatch = useAppDispatch();
@@ -86,6 +92,10 @@ function CreatePostScreen({navigation, route}) {
             )
           }
         />
+      </View>
+      <View>
+        <Text>Toast Test</Text>
+        <Button title="Toast Test" onPress={showToast} />
       </View>
     </>
   );
