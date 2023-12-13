@@ -21,7 +21,7 @@ function HomeScreen({navigation, route}) {
       // ToastExample.show(route.params?.post, ToastExample.LONG);
       setList([...list, route.params?.post]);
     }
-  }, [route.params?.post]);
+  }, [route?.params?.post]);
   return (
     <View style={commonStyles.center}>
       {list.map(item => (
@@ -47,7 +47,6 @@ const showToast = () => {
 };
 function CreatePostScreen({navigation, route}) {
   const [postText, setPostText] = useState('');
-  const [toast, setToast] = useState<any>('');
   // 使用数据
   const useInfo = useAppSelector(state => state.user);
   const dispatch = useAppDispatch();
